@@ -20,7 +20,9 @@ const FullNavigationBar = () => {
 								My Recipes
 							</Nav.Link>
 							<Nav.Link href="#">Favorite Recipes</Nav.Link>
-							<Nav.Link href="#">Add Recipe</Nav.Link>
+							<Nav.Link as={NavLink} to="/add-recipe">
+								Add Recipe
+							</Nav.Link>
 							<Nav.Link href="#">Claude Recipe</Nav.Link>
 						</Nav>
 						<div className="d-flex">

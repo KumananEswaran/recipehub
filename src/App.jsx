@@ -6,6 +6,7 @@ import './app.css';
 import HomePage from './pages/HomePage';
 import MyRecipe from './pages/MyRecipe';
 import RecipePage from './pages/RecipePage';
+import AddRecipe from './pages/AddRecipe';
 
 const App = () => {
 	return (
@@ -17,6 +18,7 @@ const App = () => {
 				<Route path="/home" element={<HomePage />} />
 				<Route path="/recipe/:id" element={<RecipePage />} />
 				<Route path="/my-recipe" element={<MyRecipe />} />
+				<Route path="/add-recipe" element={<AddRecipe />} />
 			</Routes>
 		</BrowserRouter>
 	);
