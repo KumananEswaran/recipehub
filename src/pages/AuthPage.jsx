@@ -1,5 +1,5 @@
 import { Button, Container, Image } from 'react-bootstrap';
-
+import { Link } from 'react-router-dom';
 import NavigationBar from '../components/NavigationBar';
 
 const AuthPage = () => {
@@ -16,10 +16,11 @@ const AuthPage = () => {
 						Find, save, and share your favorite recipes <br />— all in one
 						place.
 					</p>
-
-					<Button variant="outline-primary" style={{ marginTop: '40px' }}>
-						Join Us Today
-					</Button>
+					<Link to="/signup">
+						<Button variant="outline-primary" style={{ marginTop: '40px' }}>
+							Join Us Today
+						</Button>
+					</Link>
 				</div>
 				<div>
 					<Image

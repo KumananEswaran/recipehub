@@ -3,6 +3,9 @@ import AuthPage from './pages/AuthPage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import './app.css';
+import HomePage from './pages/HomePage';
+import MyRecipe from './pages/MyRecipe';
+import RecipePage from './pages/RecipePage';
 
 const App = () => {
 	return (
@@ -11,6 +14,9 @@ const App = () => {
 				<Route path="/" element={<AuthPage />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignUpPage />} />
+				<Route path="/home" element={<HomePage />} />
+				<Route path="/recipe/:id" element={<RecipePage />} />
+				<Route path="/my-recipe" element={<MyRecipe />} />
 			</Routes>
 		</BrowserRouter>
 	);
