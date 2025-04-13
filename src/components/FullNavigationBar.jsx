@@ -1,8 +1,17 @@
 import { Navbar, Nav, Button, Container } from 'react-bootstrap';
 import Logo from './Logo';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const FullNavigationBar = () => {
+	const navigate = useNavigate();
+
+	const handleLogout = async () => {
+		await signOut(auth);
+		navigate('/');
+	};
+
 	return (
 		<>
 			<Navbar bg="primary" expand="lg" variant="dark" className="sticky-top">
@@ -19,18 +28,20 @@ const FullNavigationBar = () => {
 							<Nav.Link as={NavLink} to="/my-recipe">
 								My Recipes
 							</Nav.Link>
-							<Nav.Link href="#">Favorite Recipes</Nav.Link>
+							<Nav.Link as={NavLink} to="/favorite">
+								Favorite Recipes
+							</Nav.Link>
 							<Nav.Link as={NavLink} to="/add-recipe">
 								Add Recipe
 							</Nav.Link>
-							<Nav.Link href="#">Claude Recipe</Nav.Link>
+							<Nav.Link as={NavLink} to="/claude">
+								Claude Recipe
+							</Nav.Link>
 						</Nav>
 						<div className="d-flex">
-							<Link to="/signup">
-								<Button variant="danger" type="submit">
-									Logout
-								</Button>
-							</Link>
+							<Button variant="danger" type="submit" onClick={handleLogout}>
+								Logout
+							</Button>
 						</div>
 					</Navbar.Collapse>
 				</Container>
