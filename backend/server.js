@@ -75,6 +75,21 @@ app.get('/recipes/:id', async (req, res) => {
 	}
 });
 
+// To update recipe
+app.put('/recipes/:id', async (req, res) => {
+	const { title, description, ingredients, directions, image_url } = req.body;
+	try {
+		await pool.query(
+			'UPDATE recipes SET title=$1, description=$2, ingredients=$3, directions=$4, image_url=$5 WHERE id=$6',
+			[title, description, ingredients, directions, image_url, req.params.id]
+		);
+		res.sendStatus(200);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
+});
+
 app.get('/', (req, res) => {
 	res.send('RecipeHub API is running...');
 });
