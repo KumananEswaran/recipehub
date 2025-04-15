@@ -22,14 +22,11 @@ const SignUpPage = () => {
 			);
 			const uid = userCredential.user.uid;
 
-			await axios.post(
-				'https://616972b6-8019-4a8c-815a-f19ec6a9d738-00-lr6ui4fr8hmx.sisko.replit.dev/api/register',
-				{
-					uid,
-					name,
-					email,
-				}
-			);
+			await axios.post('http://localhost:5000/api/register', {
+				uid,
+				name,
+				email,
+			});
 			toast.success('You can now login');
 			navigate('/login');
 		} catch (error) {

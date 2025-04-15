@@ -14,7 +14,21 @@ const LoginPage = () => {
 	const handleLogin = async (e) => {
 		e.preventDefault();
 		try {
-			await signInWithEmailAndPassword(auth, email, password);
+			const userCredential = await signInWithEmailAndPassword(
+				auth,
+				email,
+				password
+			);
+			const user = userCredential.user;
+
+			localStorage.setItem(
+				'user',
+				JSON.stringify({
+					uid: user.uid,
+					email: user.email,
+				})
+			);
+
 			toast.success('Logged in successfully');
 			navigate('/home');
 		} catch (error) {

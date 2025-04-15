@@ -1,11 +1,41 @@
 import FullNavigationBar from '../components/FullNavigationBar';
 import { Link, useParams } from 'react-router-dom';
-import recipeData from '../recipedata';
-import { Container, Row, Col, Image, Button } from 'react-bootstrap';
+import { Container, Row, Col, Image, Button, Spinner } from 'react-bootstrap';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const RecipePage = () => {
 	const { id } = useParams();
-	const recipe = recipeData.find((data) => data.id === Number(id)); // import recipe base on the id
+	const [recipe, setRecipe] = useState(null);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		const fetchRecipe = async () => {
+			try {
+				const res = await axios.get(`http://localhost:5000/recipes/${id}`);
+				setRecipe(res.data);
+				console.log('Fetched recipe:', res.data);
+			} catch (error) {
+				console.error('Error fetching recipe:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchRecipe();
+	}, [id]);
+
+	if (loading) {
+		return (
+			<>
+				<FullNavigationBar />
+				<Container className="py-5 text-center">
+					<Spinner animation="border" role="status" />
+					<p>Loading...</p>
+				</Container>
+			</>
+		);
+	}
 
 	return (
 		<>
@@ -38,7 +68,7 @@ const RecipePage = () => {
 					<Col>
 						<Image
 							className="mb-4 shadow-sm rounded-4"
-							src={recipe.image}
+							src={recipe.image_url}
 							alt={recipe.title}
 							fluid
 							style={{
@@ -59,8 +89,8 @@ const RecipePage = () => {
 						</h4>
 						<hr />
 						<ul className="list-unstyled">
-							{recipe.ingredients.map((ingredient, idx) => (
-								<li key={idx}>{ingredient}</li>
+							{recipe.ingredients.split('\n').map((ingredient, index) => (
+								<li key={index}>{ingredient}</li>
 							))}
 						</ul>
 						<h4>
@@ -68,8 +98,8 @@ const RecipePage = () => {
 						</h4>
 						<hr />
 						<ol>
-							{recipe.direction.map((step, idx) => (
-								<li key={idx}>{step}</li>
+							{recipe.directions.split('\n').map((step, index) => (
+								<li key={index}>{step}</li>
 							))}
 						</ol>
 					</Col>
