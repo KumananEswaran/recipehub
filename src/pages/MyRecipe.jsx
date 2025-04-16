@@ -4,6 +4,8 @@ import { Card, Container, Row, Col, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import EditModal from '../components/EditModal';
+import DeleteModal from '../components/DeleteModal';
+import { toast } from 'react-toastify';
 
 const MyRecipe = () => {
 	const [recipes, setRecipes] = useState([]);
@@ -27,6 +29,8 @@ const MyRecipe = () => {
 		fetchRecipes();
 	}, [userUid]);
 
+	// Edit recipe
+
 	const [show, setShow] = useState(false);
 	const [selectedRecipe, setSelectedRecipe] = useState(null);
 
@@ -34,7 +38,6 @@ const MyRecipe = () => {
 		setSelectedRecipe(recipe);
 		setShow(true);
 	};
-	const handleClose = () => setShow(false);
 
 	const refreshRecipes = async () => {
 		try {
@@ -43,6 +46,32 @@ const MyRecipe = () => {
 			setRecipes(userRecipes);
 		} catch (error) {
 			console.error('Error refreshing recipes:', error);
+		}
+	};
+
+	// Delete recipe
+
+	const [showDelete, setShowDelete] = useState(false);
+	const [recipeToDelete, setRecipeToDelete] = useState(null);
+
+	const deleteShow = (recipe) => {
+		setRecipeToDelete(recipe);
+		setShowDelete(true);
+	};
+
+	const deleteClose = () => {
+		setRecipeToDelete(null);
+		setShowDelete(false);
+	};
+
+	const handleDelete = async () => {
+		try {
+			await axios.delete(`http://localhost:5000/recipes/${recipeToDelete.id}`);
+			toast.success('Recipe deleted successfully');
+			deleteClose();
+			refreshRecipes();
+		} catch (error) {
+			console.error(error);
 		}
 	};
 
@@ -88,7 +117,9 @@ const MyRecipe = () => {
 														onClick={() => handleShow(recipe)}>
 														<i className="bi bi-pencil-square"></i>
 													</Button>
-													<Button variant="outline-danger">
+													<Button
+														variant="outline-danger"
+														onClick={() => deleteShow(recipe)}>
 														<i className="bi bi-trash"></i>
 													</Button>
 												</div>
@@ -106,6 +137,11 @@ const MyRecipe = () => {
 				handleClose={() => setShow(false)}
 				recipe={selectedRecipe}
 				refreshRecipes={refreshRecipes}
+			/>
+			<DeleteModal
+				show={showDelete}
+				handleClose={deleteClose}
+				handleDelete={handleDelete}
 			/>
 		</>
 	);

@@ -90,6 +90,16 @@ app.put('/recipes/:id', async (req, res) => {
 	}
 });
 
+app.delete('/recipes/:id', async (req, res) => {
+	try {
+		await pool.query('DELETE FROM recipes WHERE id=$1', [req.params.id]);
+		res.sendStatus(200);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
+});
+
 app.get('/', (req, res) => {
 	res.send('RecipeHub API is running...');
 });
