@@ -35,7 +35,7 @@ const FullNavigationBar = () => {
 								Add Recipe
 							</Nav.Link>
 							<Nav.Link as={NavLink} to="/claude">
-								Claude Recipe
+								AI Recipe
 							</Nav.Link>
 						</Nav>
 						<div className="d-flex">
