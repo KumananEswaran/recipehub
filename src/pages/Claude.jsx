@@ -1,7 +1,6 @@
 import FullNavigationBar from '../components/FullNavigationBar';
 import { Form, Button, Row, Col, Container } from 'react-bootstrap';
 import { useState, useRef, useEffect } from 'react';
-import { getRecipeFromMistral } from '../ai';
 import ReactMarkdown from 'react-markdown';
 
 const Claude = () => {
@@ -22,8 +21,19 @@ const Claude = () => {
 	}, [recipe]);
 
 	async function getRecipe() {
-		const generatedRecipe = await getRecipeFromMistral(ingredients);
-		setRecipe(generatedRecipe);
+		try {
+			const response = await fetch('http://localhost:5000/generate-recipe', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ ingredients }),
+			});
+			const data = await response.json();
+			setRecipe(data.recipe);
+		} catch (error) {
+			console.error('Error getting recipe:', error);
+		}
 	}
 
 	const ingredientsListItems = ingredients.map((ingredient) => (

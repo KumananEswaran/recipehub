@@ -2,10 +2,15 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import pg from 'pg';
+import { HfInference } from '@huggingface/inference';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+const SYSTEM_PROMPT = `You are an assistant that receives a list of ingredients that a user has and suggests a recipe they could make with some or all of those ingredients. You don't need to use every ingredient they mention in your recipe. The recipe can include additional ingredients they didn't mention, but try not to include too many ingredients. Format your response in markdown to make it easire to render to a web page`;
+
+const hf = new HfInference(process.env.HF_ACCESS_TOKEN);
 
 const { Pool } = pg;
 
@@ -90,6 +95,7 @@ app.put('/recipes/:id', async (req, res) => {
 	}
 });
 
+// To delete recipe
 app.delete('/recipes/:id', async (req, res) => {
 	try {
 		await pool.query('DELETE FROM recipes WHERE id=$1', [req.params.id]);
@@ -97,6 +103,30 @@ app.delete('/recipes/:id', async (req, res) => {
 	} catch (error) {
 		console.error(error);
 		res.sendStatus(500);
+	}
+});
+
+// Hugging Face AI
+app.post('/generate-recipe', async (req, res) => {
+	const ingredientsArr = req.body.ingredients;
+	const ingredientsString = ingredientsArr.join(', ');
+
+	try {
+		const response = await hf.chatCompletion({
+			model: 'mistralai/Mixtral-8x7B-Instruct-v0.1',
+			messages: [
+				{ role: 'system', content: SYSTEM_PROMPT },
+				{
+					role: 'user',
+					content: `I have ${ingredientsString}. Please give me a recipe you'd recommend I make!`,
+				},
+			],
+			max_tokens: 1024,
+		});
+		res.status(200).json({ recipe: response.choices[0].message.content });
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).json({ error: 'Failed to generate recipe' });
 	}
 });
 

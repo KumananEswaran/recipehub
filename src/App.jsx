@@ -11,6 +11,8 @@ import Favorite from './pages/Favorite';
 import Claude from './pages/Claude';
 import Toast from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
+import SearchRecipe from './pages/SearchRecipe';
+import ExternalRecipePage from './pages/ExternalRecipePage';
 
 const App = () => {
 	return (
@@ -57,6 +59,22 @@ const App = () => {
 						element={
 							<ProtectedRoute>
 								<Favorite />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/search-recipe"
+						element={
+							<ProtectedRoute>
+								<SearchRecipe />
+							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/search-recipe/:id"
+						element={
+							<ProtectedRoute>
+								<ExternalRecipePage />
 							</ProtectedRoute>
 						}
 					/>

@@ -34,6 +34,9 @@ const FullNavigationBar = () => {
 							<Nav.Link as={NavLink} to="/add-recipe">
 								Add Recipe
 							</Nav.Link>
+							<Nav.Link as={NavLink} to="/search-recipe">
+								Search Recipe
+							</Nav.Link>
 							<Nav.Link as={NavLink} to="/claude">
 								AI Recipe
 							</Nav.Link>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase';
+import { Spinner } from 'react-bootstrap';
 
 const ProtectedRoute = ({ children }) => {
 	const [loading, setLoading] = useState(true);
@@ -18,10 +19,9 @@ const ProtectedRoute = ({ children }) => {
 
 	if (loading)
 		return (
-			<div
-				className="d-flex justify-content-center align-items-center"
-				style={{ height: '100vh' }}>
-				<p>Loading...</p>
+			<div className="text-center mt-4">
+				<Spinner animation="border" role="status" />
+				<p>Loading</p>
 			</div>
 		);
 	if (!user) return <Navigate to="/" />;
