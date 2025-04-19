@@ -51,9 +51,9 @@ const Claude = () => {
 			<Container className="mt-5">
 				<Row className="justify-content-center">
 					<Col md="auto">
-						<h1 className="text-center fw-bold display-4 text-primary">
+						<h2 className="text-center fw-bold display-4 text-primary">
 							AI Recipe Generator
-						</h1>
+						</h2>
 						<p className="text-center text-muted">
 							Enter your ingredients and let AI cook up something delicious!
 						</p>

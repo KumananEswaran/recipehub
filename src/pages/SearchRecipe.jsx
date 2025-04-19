@@ -46,8 +46,8 @@ const SearchRecipe = () => {
 		<>
 			<FullNavigationBar />
 			<Container className="py-4">
-				<h2 className="text-center">
-					Search Recipes by Ingredient (TheMealDB)
+				<h2 className="text-center fw-bold display-4 text-primary">
+					Search Recipes by Ingredient <br /> (The MealDB)
 				</h2>
 				<section className="mx-auto py-5" style={{ maxWidth: '800px' }}>
 					<Form

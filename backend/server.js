@@ -130,6 +130,59 @@ app.post('/generate-recipe', async (req, res) => {
 	}
 });
 
+// toggle likes
+app.post('/recipes/:id/toggle-like', async (req, res) => {
+	const { id } = req.params;
+	const { uid } = req.body;
+
+	try {
+		const liked = await pool.query(
+			'SELECT 1 FROM recipe_likes WHERE recipe_id = $1 AND user_uid = $2',
+			[id, uid]
+		);
+
+		if (liked.rowCount > 0) {
+			await pool.query(
+				'DELETE FROM recipe_likes WHERE recipe_id = $1 AND user_uid = $2',
+				[id, uid]
+			);
+			await pool.query(
+				'UPDATE recipes SET likes = GREATEST(likes - 1, 0) WHERE id = $1',
+				[id]
+			);
+			return res.json({ liked: false });
+		} else {
+			await pool.query(
+				'INSERT INTO recipe_likes (recipe_id, user_uid) VALUES ($1, $2)',
+				[id, uid]
+			);
+			await pool.query('UPDATE recipes SET likes = likes + 1 WHERE id = $1', [
+				id,
+			]);
+			return res.json({ likes: true });
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Toggle like failed' });
+	}
+});
+
+// to know whether a recipe is liked or not
+app.get('/user-likes/:uid', async (req, res) => {
+	const { uid } = req.params;
+	try {
+		const result = await pool.query(
+			'SELECT recipe_id FROM recipe_likes WHERE user_uid = $1',
+			[uid]
+		);
+		const likedRecipeIds = result.rows.map((row) => row.recipe_id);
+		res.json(likedRecipeIds);
+	} catch (err) {
+		console.error('Error fetching likes:', err);
+		res.status(500).json({ error: 'Failed to fetch likes' });
+	}
+});
+
 app.get('/', (req, res) => {
 	res.send('RecipeHub API is running...');
 });

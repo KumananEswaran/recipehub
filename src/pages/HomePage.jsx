@@ -3,6 +3,7 @@ import { Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getAuth } from 'firebase/auth';
 
 const HomePage = () => {
 	const [recipes, setRecipes] = useState([]);
@@ -19,6 +20,67 @@ const HomePage = () => {
 
 		fetchRecipes();
 	}, []);
+
+	// like a recipe
+	const [userLikes, setUserLikes] = useState([]);
+
+	useEffect(() => {
+		const fetchUserLikes = async () => {
+			const user = getAuth().currentUser;
+			if (!user) return;
+
+			try {
+				const res = await axios.get(
+					`http://localhost:5000/user-likes/${user.uid}`
+				);
+				setUserLikes(res.data);
+			} catch (error) {
+				console.error('Error fetching user likes:', error);
+			}
+		};
+
+		fetchUserLikes();
+	}, []);
+
+	const handleToggleLike = async (recipeId) => {
+		const user = getAuth().currentUser;
+		if (!user) return;
+
+		try {
+			const isLiked = userLikes.includes(recipeId);
+
+			// Toggle the like state
+			const res = await axios.post(
+				`http://localhost:5000/recipes/${recipeId}/toggle-like`,
+				{ uid: user.uid }
+			);
+
+			// Update the UI optimistically
+			if (res.data.liked === false) {
+				// If recipe is no longer liked
+				setUserLikes((prevLikes) => prevLikes.filter((id) => id !== recipeId));
+				setRecipes((prevRecipes) =>
+					prevRecipes.map((recipe) =>
+						recipe.id === recipeId
+							? { ...recipe, likes: Math.max(recipe.likes - 1, 0) }
+							: recipe
+					)
+				);
+			} else {
+				// If recipe is liked
+				setUserLikes((prevLikes) => [...prevLikes, recipeId]);
+				setRecipes((prevRecipes) =>
+					prevRecipes.map((recipe) =>
+						recipe.id === recipeId
+							? { ...recipe, likes: recipe.likes + 1 }
+							: recipe
+					)
+				);
+			}
+		} catch (error) {
+			console.error('Error toggling like:', error);
+		}
+	};
 
 	return (
 		<>
@@ -45,7 +107,17 @@ const HomePage = () => {
 												<Link to={`/recipe/${recipe.id}`}>
 													<Button variant="outline-primary">View Recipe</Button>
 												</Link>
-												<i className="bi bi-heart fs-4"></i>
+												<div>
+													<i
+														className={`bi ${
+															userLikes.includes(recipe.id)
+																? 'bi-heart-fill text-danger'
+																: 'bi-heart'
+														} fs-4`}
+														style={{ cursor: 'pointer' }}
+														onClick={() => handleToggleLike(recipe.id)}></i>
+													<span className="ms-2">{recipe.likes}</span>
+												</div>
 											</div>
 										</Card.Body>
 									</Card>
