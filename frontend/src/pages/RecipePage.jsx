@@ -17,7 +17,9 @@ const RecipePage = () => {
 	useEffect(() => {
 		const fetchRecipe = async () => {
 			try {
-				const res = await axios.get(`http://localhost:5000/recipes/${id}`);
+				const res = await axios.get(
+					`https://recipehub-rho.vercel.app/recipes/${id}`
+				);
 				setRecipe(res.data);
 			} catch (error) {
 				console.error('Error fetching recipe:', error);
@@ -27,7 +29,7 @@ const RecipePage = () => {
 
 			if (user_uid) {
 				const res = await axios.get(
-					`http://localhost:5000/bookmarks/${user_uid}`
+					`https://recipehub-rho.vercel.app/bookmarks/${user_uid}`
 				);
 				const bookmarkedIds = res.data;
 				setBookmarked(bookmarkedIds.includes(Number(id)));
@@ -39,10 +41,13 @@ const RecipePage = () => {
 
 	const toggleBookmark = async () => {
 		try {
-			const res = await axios.post('http://localhost:5000/bookmarks', {
-				user_uid,
-				recipe_id: id,
-			});
+			const res = await axios.post(
+				'https://recipehub-rho.vercel.app/bookmarks',
+				{
+					user_uid,
+					recipe_id: id,
+				}
+			);
 			setBookmarked(res.data.bookmarked);
 		} catch (error) {
 			console.error(error);

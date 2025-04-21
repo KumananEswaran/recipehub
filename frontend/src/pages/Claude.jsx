@@ -22,13 +22,16 @@ const Claude = () => {
 
 	async function getRecipe() {
 		try {
-			const response = await fetch('http://localhost:5000/generate-recipe', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ ingredients }),
-			});
+			const response = await fetch(
+				'https://recipehub-rho.vercel.app/generate-recipe',
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ ingredients }),
+				}
+			);
 			const data = await response.json();
 			setRecipe(data.recipe);
 		} catch (error) {

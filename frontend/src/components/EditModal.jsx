@@ -34,7 +34,7 @@ const EditModal = ({ show, handleClose, recipe, refreshRecipes }) => {
 				imageUrl = await getDownloadURL(imageRef);
 			}
 
-			await axios.put(`http://localhost:5000/recipes/${recipe.id}`, {
+			await axios.put(`https://recipehub-rho.vercel.app/recipes/${recipe.id}`, {
 				title,
 				description,
 				ingredients,

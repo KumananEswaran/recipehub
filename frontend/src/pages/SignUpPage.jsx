@@ -22,7 +22,7 @@ const SignUpPage = () => {
 			);
 			const uid = userCredential.user.uid;
 
-			await axios.post('http://localhost:5000/api/register', {
+			await axios.post('https://recipehub-rho.vercel.app/register', {
 				uid,
 				name,
 				email,

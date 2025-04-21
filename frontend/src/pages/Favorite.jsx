@@ -14,8 +14,8 @@ const Favorite = () => {
 		const fetchFavorites = async () => {
 			try {
 				const [bookmarksRes, allRecipesRes] = await Promise.all([
-					axios.get(`http://localhost:5000/bookmarks/${user_uid}`),
-					axios.get(`http://localhost:5000/recipes`),
+					axios.get(`https://recipehub-rho.vercel.app/bookmarks/${user_uid}`),
+					axios.get(`https://recipehub-rho.vercel.app/recipes`),
 				]);
 
 				const bookmarkedIds = bookmarksRes.data; // [7, 9, 12]

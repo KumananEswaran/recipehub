@@ -11,7 +11,7 @@ const HomePage = () => {
 	useEffect(() => {
 		const fetchRecipes = async () => {
 			try {
-				const res = await axios.get('http://localhost:5000/recipes');
+				const res = await axios.get('https://recipehub-rho.vercel.app/recipes');
 				setRecipes(res.data);
 			} catch (error) {
 				console.error('Error fetching recipes:', error);
@@ -31,7 +31,7 @@ const HomePage = () => {
 
 			try {
 				const res = await axios.get(
-					`http://localhost:5000/user-likes/${user.uid}`
+					`https://recipehub-rho.vercel.app/user-likes/${user.uid}`
 				);
 				setUserLikes(res.data);
 			} catch (error) {
@@ -51,7 +51,7 @@ const HomePage = () => {
 
 			// Toggle the like state
 			const res = await axios.post(
-				`http://localhost:5000/recipes/${recipeId}/toggle-like`,
+				`https://recipehub-rho.vercel.app/recipes/${recipeId}/toggle-like`,
 				{ uid: user.uid }
 			);
 
