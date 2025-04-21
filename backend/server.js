@@ -183,6 +183,51 @@ app.get('/user-likes/:uid', async (req, res) => {
 	}
 });
 
+// toggle bookmark
+app.post('/bookmarks', async (req, res) => {
+	const { user_uid, recipe_id } = req.body;
+
+	try {
+		const check = await pool.query(
+			'SELECT * FROM bookmarked_recipe WHERE user_uid = $1 AND recipe_id = $2',
+			[user_uid, recipe_id]
+		);
+
+		if (check.rows.length > 0) {
+			await pool.query(
+				'DELETE FROM bookmarked_recipe WHERE user_uid = $1 AND recipe_id = $2',
+				[user_uid, recipe_id]
+			);
+			return res.json({ bookmarked: false });
+		} else {
+			await pool.query(
+				'INSERT INTO bookmarked_recipe (user_uid, recipe_id) VALUES ($1, $2)',
+				[user_uid, recipe_id]
+			);
+			return res.json({ bookmarked: true });
+		}
+	} catch (error) {
+		console.error(error);
+		res.status(500).send('Server error');
+	}
+});
+
+// Get all bookmarks for user
+app.get('/bookmarks/:user_uid', async (req, res) => {
+	const { user_uid } = req.params;
+
+	try {
+		const bookmarks = await pool.query(
+			'SELECT recipe_id FROM bookmarked_recipe WHERE user_uid = $1',
+			[user_uid]
+		);
+		res.json(bookmarks.rows.map((row) => row.recipe_id));
+	} catch (error) {
+		console.error(error);
+		res.status(500).send('Server error');
+	}
+});
+
 app.get('/', (req, res) => {
 	res.send('RecipeHub API is running...');
 });

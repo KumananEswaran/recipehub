@@ -95,7 +95,7 @@ const HomePage = () => {
 										<Card.Img
 											variant="top"
 											src={recipe.image_url}
-											style={{ height: '300px', objectFit: 'cover' }}
+											style={{ height: '220px', objectFit: 'cover' }}
 										/>
 										<Card.Body>
 											<Card.Title>

@@ -3,11 +3,16 @@ import { Link, useParams } from 'react-router-dom';
 import { Container, Row, Col, Image, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { getAuth } from 'firebase/auth';
 
 const RecipePage = () => {
 	const { id } = useParams();
 	const [recipe, setRecipe] = useState(null);
 	const [loading, setLoading] = useState(true);
+
+	const auth = getAuth();
+	const user_uid = auth.currentUser?.uid;
+	const [bookmarked, setBookmarked] = useState(false);
 
 	useEffect(() => {
 		const fetchRecipe = async () => {
@@ -19,10 +24,30 @@ const RecipePage = () => {
 			} finally {
 				setLoading(false);
 			}
+
+			if (user_uid) {
+				const res = await axios.get(
+					`http://localhost:5000/bookmarks/${user_uid}`
+				);
+				const bookmarkedIds = res.data;
+				setBookmarked(bookmarkedIds.includes(Number(id)));
+			}
 		};
 
 		fetchRecipe();
 	}, [id]);
+
+	const toggleBookmark = async () => {
+		try {
+			const res = await axios.post('http://localhost:5000/bookmarks', {
+				user_uid,
+				recipe_id: id,
+			});
+			setBookmarked(res.data.bookmarked);
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
 	if (loading) {
 		return (
@@ -81,7 +106,13 @@ const RecipePage = () => {
 							<h3 className="fs-2">
 								<strong>Recipe</strong>
 							</h3>
-							<i className="bi bi-bookmark fs-3"></i>
+							<i
+								className={`bi fs-3 ${
+									bookmarked ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'
+								}`}
+								style={{ cursor: 'pointer' }}
+								onClick={toggleBookmark}
+							/>
 						</div>
 						<h4>
 							<strong>Ingredients</strong>
